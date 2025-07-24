@@ -15,10 +15,10 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Convert line endings to LF (Unix) and verify file existence
-RUN dos2unix entrypoint.sh && \
-    test -f entrypoint.sh || { echo "ERROR: entrypoint.sh missing!"; exit 1; } && \
-    file entrypoint.sh | grep -q "CRLF" && { echo "ERROR: CRLF detected in entrypoint.sh"; exit 1; }
+# Convert line endings to LF and ensure file exists
+RUN test -f entrypoint.sh || { echo "ERROR: entrypoint.sh missing!"; exit 1; } && \
+    dos2unix entrypoint.sh && \
+    if grep -q $'\r' entrypoint.sh; then echo "ERROR: CRLF detected after conversion!"; exit 1; fi
 
 # Set file permissions
 RUN chown -R www-data:www-data /var/www/html \
