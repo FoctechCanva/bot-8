@@ -1,3 +1,8 @@
+# Remove existing file
+rm entrypoint.sh
+
+# Create new file with proper endings
+cat > entrypoint.sh << 'EOF'
 #!/bin/bash
 set -e
 
@@ -9,3 +14,7 @@ fi
 
 # Start Apache
 exec apache2-foreground
+EOF
+
+# Convert to LF
+dos2unix entrypoint.sh
